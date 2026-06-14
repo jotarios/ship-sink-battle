@@ -15,6 +15,11 @@ function t() {
   return convexTest(schema, modules);
 }
 
+// joinRoom / myRoster derive identity from Clerk; act as a given owner.
+function as(tc: ReturnType<typeof t>, subject: string) {
+  return tc.withIdentity({ subject });
+}
+
 async function seedHero(
   tc: ReturnType<typeof t>,
   name: string,
@@ -40,14 +45,14 @@ describe("battle join + state machine", () => {
     const b = await seedHero(tc, "B", "owner-b");
     const c = await seedHero(tc, "C", "owner-c");
 
-    expect(await tc.mutation(api.battles.joinRoom, { roomCode: "r1", heroId: a })).toEqual({ role: "A" });
+    expect(await as(tc, "owner-a").mutation(api.battles.joinRoom, { roomCode: "r1", heroId: a })).toEqual({ role: "A" });
     // A re-joining is a no-op that still returns role A (no duplicate battle).
-    expect(await tc.mutation(api.battles.joinRoom, { roomCode: "r1", heroId: a })).toEqual({ role: "A" });
-    expect(await tc.mutation(api.battles.joinRoom, { roomCode: "r1", heroId: b })).toEqual({ role: "B" });
+    expect(await as(tc, "owner-a").mutation(api.battles.joinRoom, { roomCode: "r1", heroId: a })).toEqual({ role: "A" });
+    expect(await as(tc, "owner-b").mutation(api.battles.joinRoom, { roomCode: "r1", heroId: b })).toEqual({ role: "B" });
 
     // Third distinct hero is rejected, not silently added.
     await expect(
-      tc.mutation(api.battles.joinRoom, { roomCode: "r1", heroId: c }),
+      as(tc, "owner-c").mutation(api.battles.joinRoom, { roomCode: "r1", heroId: c }),
     ).rejects.toThrow(/full/);
 
     const room = await tc.query(api.battles.getByRoom, { roomCode: "r1" });
@@ -60,8 +65,8 @@ describe("CAS resolve fires the judge exactly once", () => {
     const tc = t();
     const a = await seedHero(tc, "A", "owner-a");
     const b = await seedHero(tc, "B", "owner-b");
-    await tc.mutation(api.battles.joinRoom, { roomCode: "r2", heroId: a });
-    await tc.mutation(api.battles.joinRoom, { roomCode: "r2", heroId: b });
+    await as(tc, "owner-a").mutation(api.battles.joinRoom, { roomCode: "r2", heroId: a });
+    await as(tc, "owner-b").mutation(api.battles.joinRoom, { roomCode: "r2", heroId: b });
     const room = await tc.query(api.battles.getByRoom, { roomCode: "r2" });
     const battleId = room!.battle._id;
 
@@ -78,8 +83,8 @@ describe("capture safety", () => {
     const tc = t();
     const a = await seedHero(tc, "A", "owner-a");
     const b = await seedHero(tc, "B", "owner-b");
-    await tc.mutation(api.battles.joinRoom, { roomCode: "r3", heroId: a });
-    await tc.mutation(api.battles.joinRoom, { roomCode: "r3", heroId: b });
+    await as(tc, "owner-a").mutation(api.battles.joinRoom, { roomCode: "r3", heroId: a });
+    await as(tc, "owner-b").mutation(api.battles.joinRoom, { roomCode: "r3", heroId: b });
     const room = await tc.query(api.battles.getByRoom, { roomCode: "r3" });
     const battleId = room!.battle._id;
 
@@ -100,8 +105,8 @@ describe("capture safety", () => {
     expect(after?.heroB?.ownerSessionId).toBe("owner-a");
 
     // The winner's roster now holds both heroes; the loser's holds none.
-    const winnerRoster = await tc.query(api.heroes.myRoster, { ownerSessionId: "owner-a" });
-    const loserRoster = await tc.query(api.heroes.myRoster, { ownerSessionId: "owner-b" });
+    const winnerRoster = await as(tc, "owner-a").query(api.heroes.myRoster, {});
+    const loserRoster = await as(tc, "owner-b").query(api.heroes.myRoster, {});
     expect(winnerRoster).toHaveLength(2);
     expect(loserRoster).toHaveLength(0);
   });
@@ -110,8 +115,8 @@ describe("capture safety", () => {
     const tc = t();
     const a = await seedHero(tc, "A", "owner-a");
     const b = await seedHero(tc, "B", "owner-b");
-    await tc.mutation(api.battles.joinRoom, { roomCode: "r4", heroId: a });
-    await tc.mutation(api.battles.joinRoom, { roomCode: "r4", heroId: b });
+    await as(tc, "owner-a").mutation(api.battles.joinRoom, { roomCode: "r4", heroId: a });
+    await as(tc, "owner-b").mutation(api.battles.joinRoom, { roomCode: "r4", heroId: b });
     const room = await tc.query(api.battles.getByRoom, { roomCode: "r4" });
     const battleId = room!.battle._id;
 
@@ -131,8 +136,8 @@ describe("capture safety", () => {
     const tc = t();
     const a = await seedHero(tc, "A", "owner-a");
     const b = await seedHero(tc, "B", "owner-b");
-    await tc.mutation(api.battles.joinRoom, { roomCode: "r5", heroId: a });
-    await tc.mutation(api.battles.joinRoom, { roomCode: "r5", heroId: b });
+    await as(tc, "owner-a").mutation(api.battles.joinRoom, { roomCode: "r5", heroId: a });
+    await as(tc, "owner-b").mutation(api.battles.joinRoom, { roomCode: "r5", heroId: b });
     const room = await tc.query(api.battles.getByRoom, { roomCode: "r5" });
     const battleId = room!.battle._id;
     await tc.mutation(api.battles.claimResolve, { battleId });

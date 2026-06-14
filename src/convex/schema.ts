@@ -10,8 +10,11 @@ export default defineSchema({
     spriteKind: v.union(v.literal("sheet"), v.literal("single")),
     ownerSessionId: v.string(),
     status: v.union(v.literal("alive"), v.literal("dead")),
+    captures: v.optional(v.number()),
     createdAt: v.number(),
-  }).index("by_owner", ["ownerSessionId"]),
+  })
+    .index("by_owner", ["ownerSessionId"])
+    .index("by_captures", ["captures"]),
 
   battles: defineTable({
     roomCode: v.string(),

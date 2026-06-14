@@ -2,12 +2,15 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { validateName, validatePrompt } from "../lib/limits";
 
+// The signed-in player's roster, derived from the Clerk identity Convex verifies.
 export const myRoster = query({
-  args: { ownerSessionId: v.string() },
-  handler: async (ctx, { ownerSessionId }) => {
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
     return await ctx.db
       .query("heroes")
-      .withIndex("by_owner", (q) => q.eq("ownerSessionId", ownerSessionId))
+      .withIndex("by_owner", (q) => q.eq("ownerSessionId", identity.subject))
       .order("desc")
       .collect();
   },
@@ -16,6 +19,26 @@ export const myRoster = query({
 export const get = query({
   args: { id: v.id("heroes") },
   handler: async (ctx, { id }) => ctx.db.get(id),
+});
+
+export const topChampions = query({
+  args: {},
+  handler: async (ctx) => {
+    const heroes = await ctx.db
+      .query("heroes")
+      .withIndex("by_captures")
+      .order("desc")
+      .take(20);
+    return heroes.map((h) => ({
+      _id: h._id,
+      name: h.name,
+      spriteUrl: h.spriteUrl,
+      spriteKind: h.spriteKind,
+      captures: h.captures ?? 0,
+      ownerSessionId: h.ownerSessionId,
+      status: h.status,
+    }));
+  },
 });
 
 export const generateUploadUrl = mutation({

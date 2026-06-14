@@ -4,7 +4,7 @@ import type { CSSProperties } from "react";
 
 export type SpriteState = "idle" | "walk" | "attack" | "hurt";
 
-// Row index in the 9x8 sheet for each state, matching the sheet prompt layout.
+// Row index in the 4x4 sheet for each state, matching the sheet prompt layout.
 const STATE_ROW: Record<SpriteState, number> = {
   idle: 0,
   walk: 1,

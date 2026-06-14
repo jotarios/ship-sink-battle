@@ -53,12 +53,14 @@ async function main() {
     console.log("FAIL ->", verdict.error);
   }
 
-  console.log("\n=== 3. 72-frame spritesheet feasibility (GATE) ===");
-  const sheet = await generateSpriteSheet("a caffeinated wizard made of broken keyboards");
+  console.log("\n=== 3. 4x4 spritesheet feasibility (GATE) ===");
+  const sheetPrompt = process.argv[2] ?? "a caffeinated wizard made of broken keyboards";
+  const sheetName = process.argv[3] ?? "sheet";
+  const sheet = await generateSpriteSheet(sheetPrompt);
   if (sheet.ok) {
-    console.log("OK ->", save("sheet", sheet.data.base64, sheet.data.mediaType));
-    console.log("EYEBALL the sheet: is it a clean 9x8 grid with the SAME character per cell?");
-    console.log("  YES -> ship animated heroes (T11). NO -> static sprite fallback.");
+    console.log("OK ->", save(sheetName, sheet.data.base64, sheet.data.mediaType));
+    console.log("EYEBALL the sheet: is it a clean 4x4 grid with the SAME character per cell?");
+    console.log("  YES -> ship animated heroes. NO -> static sprite fallback.");
   } else {
     console.log("FAIL ->", sheet.error, "\n  -> fall back to static sprite.");
   }

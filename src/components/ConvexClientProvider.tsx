@@ -1,6 +1,8 @@
 "use client";
 
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { useAuth } from "@clerk/nextjs";
 import { ReactNode, useEffect, useState } from "react";
 
 let cached: ConvexReactClient | null = null;
@@ -13,9 +15,10 @@ function getClient(): ConvexReactClient | null {
 }
 
 /**
- * Convex is client-only. During SSR/prerender (no window, possibly no URL) we
- * render nothing so the reactive pages aren't statically generated against a
- * missing backend; the real UI mounts on the client under a live provider.
+ * Convex is client-only and now authenticates through Clerk. During SSR/prerender
+ * (no window, possibly no URL) we render nothing so the reactive pages aren't
+ * statically generated against a missing backend; the real UI mounts on the client
+ * under a Clerk-authenticated provider.
  */
 export function ConvexClientProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
@@ -31,5 +34,9 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
       </div>
     );
   }
-  return <ConvexProvider client={client}>{children}</ConvexProvider>;
+  return (
+    <ConvexProviderWithClerk client={client} useAuth={useAuth}>
+      {children}
+    </ConvexProviderWithClerk>
+  );
 }

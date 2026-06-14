@@ -4,7 +4,6 @@ import { use, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useSessionId } from "@/lib/session";
 import { HeroCard } from "@/components/HeroCard";
 import { Button } from "@/components/ui/8bit/button";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/8bit/alert";
@@ -13,9 +12,8 @@ import type { Id } from "@/convex/_generated/dataModel";
 export default function Arena({ params }: { params: Promise<{ code: string }> }) {
   const { code } = use(params);
   const roomCode = decodeURIComponent(code).toLowerCase();
-  const sessionId = useSessionId();
 
-  const roster = useQuery(api.heroes.myRoster, sessionId ? { ownerSessionId: sessionId } : "skip");
+  const roster = useQuery(api.heroes.myRoster, {});
   const room = useQuery(api.battles.getByRoom, { roomCode });
 
   const joinRoom = useMutation(api.battles.joinRoom);

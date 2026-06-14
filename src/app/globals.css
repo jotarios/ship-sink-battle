@@ -98,17 +98,17 @@ body {
 /*
  * ---- petdex-style spritesheet animation (T11) ----
  * Credit: technique adapted from Crafter Station's petdex (MIT).
- * One spritesheet, 9 cols x 8 rows (192x208 per cell). Animate purely in CSS by
- * stepping background-position across a row. Switch --sprite-row to play a
- * different state (idle / walk / attack / hurt) during the battle reveal.
+ * One spritesheet, 4 cols x 4 rows (256x256 native cells, rendered smaller).
+ * Animate purely in CSS by stepping background-position across a row. Switch
+ * --sprite-row to play a different state (idle / walk / attack / hurt).
  */
 .hero-sprite {
-  --sprite-cols: 9;
-  --sprite-rows: 8;
+  --sprite-cols: 4;
+  --sprite-rows: 4;
   --sprite-w: 192px;
-  --sprite-h: 208px;
+  --sprite-h: 192px;
   --sprite-row: 0;
-  --sprite-frames: 9;
+  --sprite-frames: 4;
   --sprite-duration: 1100ms;
   --sprite-y: calc(var(--sprite-row) * (var(--sprite-h) * -1));
   --sprite-end-x: calc(var(--sprite-frames) * (var(--sprite-w) * -1));

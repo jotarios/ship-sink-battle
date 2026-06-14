@@ -32,8 +32,12 @@ export const joinRoom = mutation({
     if (!codeResult.ok) throw new Error(codeResult.error);
     const code = codeResult.value;
 
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("not signed in");
+
     const hero = await ctx.db.get(heroId);
     if (!hero || hero.status !== "alive") throw new Error("hero not available");
+    if (hero.ownerSessionId !== identity.subject) throw new Error("not your hero");
 
     const existing = await ctx.db
       .query("battles")
@@ -129,6 +133,7 @@ export const finishBattle = internalMutation({
     }
     // Hand the loser's hero over to the winning player's roster.
     await ctx.db.patch(loserId, { ownerSessionId: winner.ownerSessionId });
+    await ctx.db.patch(winId, { captures: (winner.captures ?? 0) + 1 });
     await ctx.db.patch(battleId, { status: "done", winnerId: winId, narration });
   },
 });

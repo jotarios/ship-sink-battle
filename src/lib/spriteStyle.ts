@@ -43,10 +43,14 @@ export function buildSpritePrompt(
 }
 
 const SHEET_LAYOUT =
-  "Render as ONE spritesheet grid: 9 columns by 8 rows of frames on a single image, " +
-  "each cell 192x208 pixels, total 1728x1664 pixels, the SAME character in every cell, " +
-  "consistent size and palette across all cells, each row a short animation cycle " +
-  "(row 1 idle, row 2 walk, row 3 attack, row 4 hurt), flat background, no grid lines, no text.";
+  "Render as ONE sprite sheet image, 1024x1024 pixels, divided into a STRICT 4 rows by 4 " +
+  "columns grid = exactly 16 equal cells, each cell exactly 256x256 pixels, evenly spaced. " +
+  "Draw the EXACT SAME character in all 16 cells: identical design, identical size, identical " +
+  "palette, centered within its cell. Read each row left-to-right as ONE looping 4-frame " +
+  "animation: row 1 = idle (small breathing bob, near-identical frames), row 2 = walk cycle, " +
+  "row 3 = attack swing, row 4 = hurt recoil. Keep consecutive frames in a row only slightly " +
+  "different so the row plays as smooth motion. Flat single-color background filling every " +
+  "cell. NO gridlines, NO borders, NO numbers, NO labels, NO text, NO shadows between cells.";
 
 export function buildSheetPrompt(
   userPrompt: string,
