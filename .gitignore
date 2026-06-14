@@ -1,0 +1,17 @@
+node_modules/
+.next/
+out/
+build/
+.env*.local
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+scripts/out/
+test-results/
+playwright-report/
+.convex/
+
+# local agent/skill tooling
+.claude/
+.agents/
+skills-lock.json

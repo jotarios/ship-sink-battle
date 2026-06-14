@@ -1,0 +1,11 @@
+- Founder - a determined founder in a hoodie wielding a glowing laptop like a battle-axe, energy-drink bandolier across the chest, rocket-ship pin on the collar, tiny cape made of pitch decks
+- Ramen Sage — a wise mentor figure made of instant-ramen noodles, steam halo, chopstick staff, MVP scroll in one hand
+- Pivot Knight — an armored knight whose shield is a giant pie chart, sword forged from a burndown chart, compass spinning wildly on the helmet
+- Seed Round Sorcerer — a flashy wizard throwing coins from a bottomless term-sheet spellbook, dollar-sign runes glowing, top hat stuffed with cash
+- Server Dragon — a colossal red scaled dragon with glowing server-rack wings, ethernet-cable whiskers, breathing a stream of molten lava, hoarding a pile of golden GPUs
+- Bug Hydra — a many-headed swamp serpent where each severed head respawns as a new error message, dripping neon-green ooze, red-eyed and hissing
+- Caffeine Golem — a hulking golem built from stacked coffee mugs and espresso machines, steam venting from cracks, glowing amber core, fists of grinder gears
+- Deadline Reaper — a hooded skeletal figure in a tattered cloak made of overdue invoices, scythe forged from a snapped calendar, hourglass dangling from the belt
+- Pixel Phoenix — a blazing 8-bit firebird with wings of scattering pixels, trailing sparks, rising from a pile of crashed hard drives, eyes like power LEDs
+- Merge Conflict Beast — a snarling two-headed wolf, each head fighting the other, fur made of tangled red and green diff lines, glowing arrow scars
+- Cloud Titan — a giant made of storm clouds and floating data centers, lightning veins, raining packets, a halo of orbiting satellites

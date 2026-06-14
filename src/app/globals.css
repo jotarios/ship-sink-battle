@@ -1,0 +1,195 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.147 0.004 49.25);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.147 0.004 49.25);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.147 0.004 49.25);
+  --primary: oklch(0.216 0.006 56.043);
+  --primary-foreground: oklch(0.985 0.001 106.423);
+  --secondary: oklch(0.97 0.001 106.424);
+  --secondary-foreground: oklch(0.216 0.006 56.043);
+  --muted: oklch(0.97 0.001 106.424);
+  --muted-foreground: oklch(0.553 0.013 58.071);
+  --accent: oklch(0.97 0.001 106.424);
+  --accent-foreground: oklch(0.216 0.006 56.043);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.923 0.003 48.717);
+  --input: oklch(0.923 0.003 48.717);
+  --ring: oklch(0.709 0.01 56.259);
+}
+
+.dark {
+  --background: oklch(0.147 0.004 49.25);
+  --foreground: oklch(0.985 0.001 106.423);
+  --card: oklch(0.216 0.006 56.043);
+  --card-foreground: oklch(0.985 0.001 106.423);
+  --popover: oklch(0.216 0.006 56.043);
+  --popover-foreground: oklch(0.985 0.001 106.423);
+  --primary: oklch(0.923 0.003 48.717);
+  --primary-foreground: oklch(0.216 0.006 56.043);
+  --secondary: oklch(0.268 0.007 34.298);
+  --secondary-foreground: oklch(0.985 0.001 106.423);
+  --muted: oklch(0.268 0.007 34.298);
+  --muted-foreground: oklch(0.709 0.01 56.259);
+  --accent: oklch(0.268 0.007 34.298);
+  --accent-foreground: oklch(0.985 0.001 106.423);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.553 0.013 58.071);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-press-start: var(--font-press-start);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
+
+/* ---- Prompt Heroes: arena chrome + sprite animation ---- */
+:root {
+  --bg: #0f0f1b;
+  --ink: #e8e6d8;
+  --gold: #f7d51d;
+  --danger: #e8463a;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  image-rendering: pixelated;
+}
+
+/*
+ * ---- petdex-style spritesheet animation (T11) ----
+ * Credit: technique adapted from Crafter Station's petdex (MIT).
+ * One spritesheet, 9 cols x 8 rows (192x208 per cell). Animate purely in CSS by
+ * stepping background-position across a row. Switch --sprite-row to play a
+ * different state (idle / walk / attack / hurt) during the battle reveal.
+ */
+.hero-sprite {
+  --sprite-cols: 9;
+  --sprite-rows: 8;
+  --sprite-w: 192px;
+  --sprite-h: 208px;
+  --sprite-row: 0;
+  --sprite-frames: 9;
+  --sprite-duration: 1100ms;
+  --sprite-y: calc(var(--sprite-row) * (var(--sprite-h) * -1));
+  --sprite-end-x: calc(var(--sprite-frames) * (var(--sprite-w) * -1));
+  width: var(--sprite-w);
+  height: var(--sprite-h);
+  background-image: var(--sprite-url);
+  background-size: calc(var(--sprite-w) * var(--sprite-cols))
+    calc(var(--sprite-h) * var(--sprite-rows));
+  image-rendering: pixelated;
+  animation: hero-state var(--sprite-duration) steps(var(--sprite-frames)) infinite;
+}
+
+@keyframes hero-state {
+  from {
+    background-position: 0 var(--sprite-y);
+  }
+  to {
+    background-position: var(--sprite-end-x) var(--sprite-y);
+  }
+}
+
+/* Static single-sprite fallback (spike said sheets unreliable). Cheap idle bob. */
+.hero-static {
+  width: 192px;
+  height: 192px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  animation: bob 1400ms ease-in-out infinite;
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.hero-hit {
+  animation: shake 420ms steps(4) 2;
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+/* Capture: the loser's hero is taken by the winner — it dims and shrinks a
+ * little but stays on screen (it lives on, just under new ownership). */
+.hero-captured {
+  animation: capture 700ms ease-out forwards;
+}
+@keyframes capture {
+  0% {
+    transform: scale(1);
+    filter: none;
+  }
+  40% {
+    transform: scale(1.08);
+    filter: brightness(1.6) saturate(1.4);
+  }
+  100% {
+    transform: scale(0.92);
+    filter: grayscale(0.5) brightness(0.85);
+    opacity: 0.8;
+  }
+}
+
+.blink {
+  animation: blink 900ms steps(2) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
+}
